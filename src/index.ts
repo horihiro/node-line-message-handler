@@ -14,8 +14,8 @@ export declare type RecievedData = {
 
 class MessageContext {
   private event: MessageEvent;
-  private handler: LINEMessageHandler;
-  public constructor(event: MessageEvent, handler: LINEMessageHandler) {
+  private handler: LINEBotMessageHandler;
+  public constructor(event: MessageEvent, handler: LINEBotMessageHandler) {
     this.event = event;
     this.handler = handler;
   };

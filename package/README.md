@@ -1,9 +1,18 @@
-import { LINEBotMessageHandler, MessageContext, RecievedData } from '../index';
+# node-linebot-message-handler
+A module to make it more easy to handle LINE bot message, and wrapping some original Client APIs.
+
+## Install
+
+```bash
+npm install node-linebot-message-handler --save
+```
+
+## Usage
+
+```typescript
+import { LINEMessageHandler, MessageContext, RecievedData } from 'node-linebot-message-handler';
 import * as Types from "@line/bot-sdk/dist/types";
-import * as fs from 'fs';
 import { TextEventMessage } from '@line/bot-sdk';
-import * as http from 'http';
-import config from './config'; // { channelSecret: '<LINEBOT_CHANNEL_SECRET>', channelAccessToken: '<LINEBOT_CHANNEL_ACCESS_TOKEN>' }
 
 const msgHandler = new LINEBotMessageHandler(config as Types.ClientConfig);
 
@@ -51,34 +60,12 @@ msgHandler
   console.error('invalid');
 });
 
+// set recieved message, then above listeners will be called.
+msgHandler.setRecievedMessage(data.toString(), signature);
 
-http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
-  let data = '';
-
-  req
-  // emit 'data' event on recieving the request
-  .on('data', function(chunk:any) {
-    if (!chunk) return;
-    data += chunk.toString();
-  })
-  // emit 'end' event on finishing the request
-  .on('end', function() {
-    // get message signature from request headers.
-    const signature: string = req.headers['x-line-signature'] ? req.headers['x-line-signature'].toString() as string : '';
-
-    // validate the signature and parse event.
-    msgHandler.setRecievedMessage(data.toString(), signature);
-
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-
-    res.end('Hello LINE bot\n');
-  });
-
-}).listen(7071, '127.0.0.1')
-.on('listening', () => {
-  // you can access original client through MessageHandler#getClient()
-  msgHandler.getClient().broadcast([{
-    type: 'text',
-    text: 'rebooted'
-  }]);
-});
+// you can access original client through MessageHandler#getClient() and use original APIs (i.e. pushMessage, broadcast, etc)
+msgHandler.getClient().broadcast([{
+  type: 'text',
+  text: 'rebooted'
+}]);
+```
