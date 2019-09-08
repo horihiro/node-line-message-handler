@@ -11,25 +11,29 @@ msgHandler
 // emit `text` event on recieving text message
 // 'location' and 'sticker' are same as this.
 .on('text', async (context:MessageContext) => {
-  // 'context.getEvent()' returns Message event object, so you can get message through context.getEvent().message
+  // MessageContext#getEvent() returns Message event object, so you can get message through context.MessageContext#message
   // https://developers.line.biz/en/reference/messaging-api/#message-event
 
   const textEventMessage : TextEventMessage = context.getEvent().message as TextEventMessage;
   const eventSource : Types.EventSource = context.getEvent().source;
 
-  // echo message
+  // you can send response message from context directly.
+  // i.e. echo message
   await context.replyMessage([{
+    type: 'text',
+    text: textEventMessage.text
+  }]);
+
+  // you can send push message without `to` parameter because the context has it.
+  await context.pushMessage([{
     type: 'text',
     text: textEventMessage.text
   }]);
 
   if (!eventSource.userId) return;
 
-  // you can access original client through context.getClient()
+  // or you can access original client through MessageContext#getClient() and use original APIs (i.e. pushMessage, broadcast, etc)
   await context.getClient().pushMessage(eventSource.userId, [{
-    type: 'text',
-    text: textEventMessage.text
-  },{
     type: 'text',
     text: textEventMessage.text
   }]);
@@ -44,8 +48,9 @@ msgHandler
 // emit `invalid` event on failing to validate the message signature
 .on('invalid', async (data ) => {
   // invalid signature or request body.
-  console.log('invalid');
+  console.error('invalid');
 });
+
 
 http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
   let data = '';
