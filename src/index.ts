@@ -1,4 +1,4 @@
-import { Client, MessageEvent } from "@line/bot-sdk";
+import { Client, MessageEvent, validateSignature } from "@line/bot-sdk";
 import * as Types from "@line/bot-sdk/dist/types";
 import { EventEmitter } from "events";
 import { StrictEventEmitter } from "strict-event-emitter-types";
@@ -28,6 +28,10 @@ class MessageContext {
   public replyMessage( messages: Types.Message | Types.Message[], notificationDisabled?: boolean): Promise<Types.MessageAPIResponseBase> {
     return this.handler.getClient().replyMessage(this.event.replyToken, messages, notificationDisabled);
   }
+  public pushMessage( messages: Types.Message | Types.Message[], notificationDisabled?: boolean): Promise<Types.MessageAPIResponseBase> {
+    const to: string = this.event.source.type === 'room' ? this.event.source.roomId : (this.event.source.type === 'group' ? this.event.source.groupId : this.event.source.userId);
+    return this.handler.getClient().pushMessage(to, messages, notificationDisabled);
+  }
 }
 interface MessageTypes {
   text: (messageContext:MessageContext) => void;
@@ -53,19 +57,9 @@ class LINEMessageHandler extends (EventEmitter as { new(): LINEMessageEvent }){
     return this.rawClient;
   }
   public async setRecievedMessage(webhookRequestBodyString: string, signature?: string) : Promise<void>{
-    if (signature) {
-      try {
-        const calcurated = crypto
-        .createHmac('SHA256', this.config.channelSecret as crypto.BinaryLike)
-        .update(Buffer.from(webhookRequestBodyString)).digest('base64');
-        if (calcurated !== signature) {
-          this.emit('invalid', webhookRequestBodyString);
-          return;
-        }
-      } catch {
-        this.emit('invalid', webhookRequestBodyString);
-        return;
-      }
+    if (signature && (!this.config.channelSecret || !validateSignature(webhookRequestBodyString, this.config.channelSecret, signature))) {
+      this.emit('invalid', webhookRequestBodyString);
+      return;
     }
     const webhookRequestBody: Types.WebhookRequestBody = JSON.parse(webhookRequestBodyString);
     for (let event of webhookRequestBody.events as Array<MessageEvent>) {
