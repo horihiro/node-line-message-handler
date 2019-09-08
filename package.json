@@ -8,13 +8,14 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build && rimraf dist/example "
   },
   "author": "horihiro",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^12.7.4",
     "@types/node-fetch": "^2.5.0",
+    "rimraf": "^3.0.0",
     "typescript": "^3.6.2"
   },
   "dependencies": {
