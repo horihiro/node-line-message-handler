@@ -54,37 +54,42 @@ class LINEBotMessageHandler extends (EventEmitter as { new(): LINEMessageEvent }
   public getClient() : Client {
     return this.rawClient;
   }
-  public async setRecievedMessage(webhookRequestBodyString: string, signature?: string) : Promise<void>{
-    if (signature && (!this.config.channelSecret || !validateSignature(webhookRequestBodyString, this.config.channelSecret, signature))) {
-      this.emit('invalid', webhookRequestBodyString);
-      return;
-    }
-    const webhookRequestBody: Types.WebhookRequestBody = JSON.parse(webhookRequestBodyString);
-    for (let event of webhookRequestBody.events as Array<MessageEvent>) {
-      const messageContext: MessageContext = new MessageContext(event, this);
-      switch(event.message.type) {
-        case 'image':
-        case 'video':
-        case 'audio':
-        case 'file':
-          const response:Response = await fetch(`https://api.line.me/v2/bot/message/${event.message.id}/content`, {
-            headers: {
-              Authorization: `Bearer ${this.config.channelAccessToken}`
-            }
-          });
-          const stream = response.body;
-          const contentType = response.headers.get('content-type');
-          this.emit(event.message.type, messageContext, {stream, contentType});
-          break;
-        case 'text':
-        case 'location':
-        case 'sticker':
-        default:
-          this.emit(['text', 'location', 'sticker'].includes(event.message.type) ? event.message.type : 'other', messageContext);
-          break;
-      }
-    }
-    return ;
+  public setRecievedMessage(webhookRequestBodyString: string, signature?: string) : Promise<void>{
+    return new Promise((res) => {
+      process.nextTick(async () => {
+        if (signature && (!this.config.channelSecret || !validateSignature(webhookRequestBodyString, this.config.channelSecret, signature))) {
+          this.emit('invalid', webhookRequestBodyString);
+          res();
+          return;
+        }
+        const webhookRequestBody: Types.WebhookRequestBody = JSON.parse(webhookRequestBodyString);
+        for (let event of webhookRequestBody.events as Array<MessageEvent>) {
+          const messageContext: MessageContext = new MessageContext(event, this);
+          switch(event.message.type) {
+            case 'image':
+            case 'video':
+            case 'audio':
+            case 'file':
+              const response:Response = await fetch(`https://api.line.me/v2/bot/message/${event.message.id}/content`, {
+                headers: {
+                  Authorization: `Bearer ${this.config.channelAccessToken}`
+                }
+              });
+              const stream = response.body;
+              const contentType = response.headers.get('content-type');
+              this.emit(event.message.type, messageContext, {stream, contentType});
+              break;
+            case 'text':
+            case 'location':
+            case 'sticker':
+            default:
+              this.emit(['text', 'location', 'sticker'].includes(event.message.type) ? event.message.type : 'other', messageContext);
+              break;
+          }
+        }
+        res();
+      });
+    });
   };
 };
 
