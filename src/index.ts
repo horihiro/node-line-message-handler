@@ -45,7 +45,7 @@ interface MessageTypes {
   other: (messageContext:MessageContext) => void;
 }
 
-class LINEMessageHandler extends (EventEmitter as { new(): LINEMessageEvent }){
+class LINEBotMessageHandler extends (EventEmitter as { new(): LINEMessageEvent }){
   private config: Types.ClientConfig;
   private rawClient: Client;
   constructor (config: Types.ClientConfig) {
@@ -90,4 +90,4 @@ class LINEMessageHandler extends (EventEmitter as { new(): LINEMessageEvent }){
   };
 };
 
-export {LINEMessageHandler, MessageContext}
+export {LINEBotMessageHandler, MessageContext}

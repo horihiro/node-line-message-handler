@@ -1,20 +1,20 @@
-# node-line-message-handler
-A module to make it more easy to handl LINE bot message, and wrapping some original Client APIs.
+# node-linebot-message-handler
+A module to make it more easy to handle LINE bot message, and wrapping some original Client APIs.
 
 ## Install
 
 ```bash
-npm install node-line-message-handler --save
+npm install node-linebot-message-handler --save
 ```
 
 ## Usage
 
 ```typescript
-import { LINEMessageHandler, MessageContext, RecievedData } from 'node-line-message-handler';
+import { LINEMessageHandler, MessageContext, RecievedData } from 'node-linebot-message-handler';
 import * as Types from "@line/bot-sdk/dist/types";
 import { TextEventMessage } from '@line/bot-sdk';
 
-const msgHandler = new LINEMessageHandler(config as Types.ClientConfig);
+const msgHandler = new LINEBotMessageHandler(config as Types.ClientConfig);
 
 msgHandler
 // emit `text` event on recieving text message
