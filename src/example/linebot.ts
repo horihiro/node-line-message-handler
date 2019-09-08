@@ -9,7 +9,6 @@ const msgHandler = new LINEBotMessageHandler(config as Types.ClientConfig);
 
 msgHandler
 // emit `text` event on recieving text message
-// 'location' and 'sticker' are same as this.
 .on('text', async (context:MessageContext) => {
   // MessageContext#getEvent() returns Message event object, so you can get message through MessageEvent#message
   // https://developers.line.biz/en/reference/messaging-api/#message-event
@@ -38,12 +37,28 @@ msgHandler
     text: textEventMessage.text
   }]);
 })
+// 'location' and 'sticker' are same as 'text'.
+.on('location', async (context:MessageContext) => {
+  // : 
+})
+.on('sticker', async (context:MessageContext) => {
+  // : 
+})
 // emit `image` event on recieving iamge message
-// 'video', 'audio' and 'file' are same as this.
 .on('image', async (context:MessageContext, data:RecievedData ) => {
   const dest = fs.createWriteStream(`dest.${data.contentType ? data.contentType.replace(/[^/]+\//, '') : 'dat'}`);
   // write to a local file using stream
   data.stream.pipe(dest);
+})
+// 'video', 'audio' and 'file' are same as `image`.
+.on('video', async (context:MessageContext, data:RecievedData ) => {
+  // : 
+})
+.on('audio', async (context:MessageContext, data:RecievedData ) => {
+  // : 
+})
+.on('file', async (context:MessageContext, data:RecievedData ) => {
+  // : 
 })
 // emit `invalid` event on failing to validate the message signature
 .on('invalid', async (data ) => {
