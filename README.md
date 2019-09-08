@@ -60,7 +60,7 @@ msgHandler
   console.error('invalid');
 });
 
-// set recieved message, then avobe listeners will be called.
+// set recieved message, then above listeners will be called.
 msgHandler.setRecievedMessage(data.toString(), signature);
 
 // you can access original client through MessageHandler#getClient() and use original APIs (i.e. pushMessage, broadcast, etc)
