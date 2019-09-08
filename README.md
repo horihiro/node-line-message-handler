@@ -1,9 +1,16 @@
 # node-line-message-handler
+A module to make it more easy to handl LINE bot message, and wrapping some original Client APIs.
+
+## Install
+
+```bash
+npm install node-line-message-handler --save
+```
 
 ## Usage
 
 ```typescript
-import { LINEMessageHandler, MessageContext, RecievedData } from '../index';
+import { LINEMessageHandler, MessageContext, RecievedData } from 'node-line-message-handler';
 import * as Types from "@line/bot-sdk/dist/types";
 import { TextEventMessage } from '@line/bot-sdk';
 
@@ -26,13 +33,16 @@ msgHandler
     text: textEventMessage.text
   }]);
 
-  if (!eventSource.userId) return;
-
-  // you can access original client through MessageContext#getClient() and use original APIs (i.e. pushMessage, broadcast, etc)
-  await context.getClient().pushMessage(eventSource.userId, [{
+  // you can send push message without `to` parameter because the context has it.
+  await context.pushMessage([{
     type: 'text',
     text: textEventMessage.text
-  },{
+  }]);
+
+  if (!eventSource.userId) return;
+
+  // or you can access original client through MessageContext#getClient() and use original APIs (i.e. pushMessage, broadcast, etc)
+  await context.getClient().pushMessage(eventSource.userId, [{
     type: 'text',
     text: textEventMessage.text
   }]);
