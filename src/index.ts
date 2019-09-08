@@ -3,8 +3,6 @@ import * as Types from "@line/bot-sdk/dist/types";
 import { EventEmitter } from "events";
 import { StrictEventEmitter } from "strict-event-emitter-types";
 import fetch, { Response } from "node-fetch";
-import * as crypto from 'crypto';
-
 
 type LINEMessageEvent =  StrictEventEmitter<EventEmitter, MessageTypes>;
 export declare type RecievedData = {
