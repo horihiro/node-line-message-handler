@@ -72,12 +72,12 @@ http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
 
   req
   // emit 'data' event on recieving the request
-  .on('data', function(chunk:any) {
+  .on('data', (chunk:any) => {
     if (!chunk) return;
     data += chunk.toString();
   })
   // emit 'end' event on finishing the request
-  .on('end', function() {
+  .on('end', () => {
     // get message signature from request headers.
     const signature: string = req.headers['x-line-signature'] ? req.headers['x-line-signature'].toString() as string : '';
 
