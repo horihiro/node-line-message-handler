@@ -12,6 +12,14 @@
   },
   "author": "horihiro",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:horihiro/node-linebot-message-handler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/horihiro/node-linebot-message-handler/issues",
+    "email": "hori.kawa.shima.tool+github@gmail.com"
+  },
   "devDependencies": {
     "@types/node": "^12.7.4",
     "@types/node-fetch": "^2.5.0",
