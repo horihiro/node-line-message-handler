@@ -62,3 +62,6 @@ typings/
 
 # output directory
 dist/
+
+# secret file
+src/example/config.ts

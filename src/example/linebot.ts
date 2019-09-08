@@ -3,7 +3,7 @@ import * as Types from "@line/bot-sdk/dist/types";
 import * as fs from 'fs';
 import { TextEventMessage } from '@line/bot-sdk';
 import * as http from 'http';
-import config from './config.orig';
+import config from './config';
 
 const msgHandler = new LINEMessageHandler(config as Types.ClientConfig);
 
