@@ -11,14 +11,14 @@ msgHandler
 // emit `text` event on recieving text message
 // 'location' and 'sticker' are same as this.
 .on('text', async (context:MessageContext) => {
-  // MessageContext#getEvent() returns Message event object, so you can get message through context.MessageContext#message
+  // MessageContext#getEvent() returns Message event object, so you can get message through MessageEvent#message
   // https://developers.line.biz/en/reference/messaging-api/#message-event
 
   const textEventMessage : TextEventMessage = context.getEvent().message as TextEventMessage;
   const eventSource : Types.EventSource = context.getEvent().source;
 
   // you can send response message from context directly.
-  // i.e. echo message
+  // e.g. echo message
   await context.replyMessage([{
     type: 'text',
     text: textEventMessage.text
