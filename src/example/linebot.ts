@@ -45,19 +45,21 @@ msgHandler
   // : 
 })
 // emit `image` event on recieving iamge message
-.on('image', async (context:MessageContext, data:RecievedData ) => {
+.on('image', async (context:MessageContext, data?:RecievedData ) => {
+  if (!data) return;
+
   const dest = fs.createWriteStream(`dest.${data.contentType ? data.contentType.replace(/[^/]+\//, '') : 'dat'}`);
   // write to a local file using stream
   data.stream.pipe(dest);
 })
 // 'video', 'audio' and 'file' are same as `image`.
-.on('video', async (context:MessageContext, data:RecievedData ) => {
+.on('video', async (context:MessageContext, data?:RecievedData ) => {
   // : 
 })
-.on('audio', async (context:MessageContext, data:RecievedData ) => {
+.on('audio', async (context:MessageContext, data?:RecievedData ) => {
   // : 
 })
-.on('file', async (context:MessageContext, data:RecievedData ) => {
+.on('file', async (context:MessageContext, data?:RecievedData ) => {
   // : 
 })
 // emit `invalid` event on failing to validate the message signature
@@ -82,7 +84,7 @@ http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
     const signature: string = req.headers['x-line-signature'] ? req.headers['x-line-signature'].toString() as string : '';
 
     // validate the signature and parse event.
-    msgHandler.setRecievedMessage(data.toString(), signature);
+    msgHandler.setRecievedMessage(data.toString(), {signature});
 
     res.writeHead(200, {'Content-Type': 'text/plain'});
 

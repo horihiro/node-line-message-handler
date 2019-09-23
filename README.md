@@ -56,7 +56,9 @@ msgHandler
 // emit `image` event on recieving image message
 .on('image', async (context:MessageContext, data?:RecievedData ) => {
   // if `downloadData` is false then data is always undefined.
-  const dest = fs.createWriteStream(`dest.${data.contentType ? data.contentType.replace(/[^/]+\//, '') : 'dat'}`);
+  if (!data) return;
+
+const dest = fs.createWriteStream(`dest.${data.contentType ? data.contentType.replace(/[^/]+\//, '') : 'dat'}`);
   // write to a local file using stream
   data.stream.pipe(dest);
 })
