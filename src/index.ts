@@ -76,7 +76,7 @@ class LINEBotMessageHandler extends (EventEmitter as { new(): LINEMessageEvent }
             case 'audio':
             case 'file':
 
-              const receivedData:RecievedData|undefined = option && option.downloadData ? await (async () => {
+              const receivedData:RecievedData|undefined = option && option.downloadData === false ? undefined : await (async () => {
                 const response:Response = await fetch(`https://api.line.me/v2/bot/message/${event.message.id}/content`, {
                   headers: {
                     Authorization: `Bearer ${this.config.channelAccessToken}`
@@ -85,7 +85,7 @@ class LINEBotMessageHandler extends (EventEmitter as { new(): LINEMessageEvent }
                 const stream = response.body;
                 const contentType = response.headers.get('content-type');
                 return {stream, contentType};
-              })() : undefined;
+              })();
               this.emit(event.message.type, messageContext, receivedData);
               break;
             case 'text':

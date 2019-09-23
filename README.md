@@ -10,7 +10,7 @@ npm install node-linebot-message-handler --save
 ## Usage
 
 ```typescript
-import { LINEMessageHandler, MessageContext, RecievedData } from 'node-linebot-message-handler';
+import { LINEBotMessageHandler, MessageContext, RecievedData } from 'node-linebot-message-handler';
 import * as Types from "@line/bot-sdk/dist/types";
 import { TextEventMessage } from '@line/bot-sdk';
 
@@ -54,19 +54,20 @@ msgHandler
   // : 
 })
 // emit `image` event on recieving image message
-.on('image', async (context:MessageContext, data:RecievedData ) => {
+.on('image', async (context:MessageContext, data?:RecievedData ) => {
+  // if `downloadData` is false then data is always undefined.
   const dest = fs.createWriteStream(`dest.${data.contentType ? data.contentType.replace(/[^/]+\//, '') : 'dat'}`);
   // write to a local file using stream
   data.stream.pipe(dest);
 })
 // 'video', 'audio' and 'file' are same as `image`.
-.on('video', async (context:MessageContext, data:RecievedData ) => {
+.on('video', async (context:MessageContext, data?:RecievedData ) => {
   // : 
 })
-.on('audio', async (context:MessageContext, data:RecievedData ) => {
+.on('audio', async (context:MessageContext, data?:RecievedData ) => {
   // : 
 })
-.on('file', async (context:MessageContext, data:RecievedData ) => {
+.on('file', async (context:MessageContext, data?:RecievedData ) => {
   // : 
 })
 // emit `invalid` event on failing to validate the message signature
@@ -76,7 +77,10 @@ msgHandler
 });
 
 // set recieved message, then above listeners will be called.
-msgHandler.setRecievedMessage(data.toString(), signature /* from `x-line-signature` header in request */);
+msgHandler.setRecievedMessage(data.toString(), {
+  signature /* from `x-line-signature` header in request */,
+  downloadData: true /* if `downloadData` is false then downloaded data can be handled in `on` method. default value is true. */
+});
 
 // you can access original client through MessageHandler#getClient() and use original APIs (i.e. pushMessage, broadcast, etc)
 msgHandler.getClient().broadcast([{
