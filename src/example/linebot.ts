@@ -84,7 +84,7 @@ http.createServer((req: http.IncomingMessage, res: http.ServerResponse) => {
     const signature: string = req.headers['x-line-signature'] ? req.headers['x-line-signature'].toString() as string : '';
 
     // validate the signature and parse event.
-    msgHandler.setRecievedMessage(data.toString(), {signature});
+    msgHandler.setRecievedMessage(data.toString(), {downloadData: false});
 
     res.writeHead(200, {'Content-Type': 'text/plain'});
 
